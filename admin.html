@@ -20,15 +20,15 @@
       --muted: #6b7799;
       --border: #e2e7f5;
       --blue: #3b5bff;
-      --blue-light: #eef1ff;
+      --blue-light: #f5f8ff;
       --blue-mid: #5a77ff;
       --green: #10b981;
       --green-light: #d1fae5;
       --amber: #f59e0b;
       --amber-light: #fef3c7;
       --red: #ef4444;
-      --red-light: #fee2e2;
       --shadow: 0 4px 20px rgba(59, 91, 255, 0.08);
+      --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.1);
       --radius: 14px;
       --radius-sm: 8px;
       --radius-lg: 20px;
@@ -237,6 +237,7 @@
       position: sticky;
       top: 0;
       z-index: 100;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.02);
     }
 
     .topbar-inner {
@@ -379,6 +380,14 @@
       padding: 6px;
       margin-bottom: 28px;
       width: fit-content;
+      max-width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+
+    .tabs::-webkit-scrollbar {
+      display: none;
     }
 
     .tab-btn {
@@ -395,6 +404,7 @@
       display: flex;
       align-items: center;
       gap: 6px;
+      white-space: nowrap;
     }
 
     .tab-btn:hover {
@@ -989,9 +999,31 @@
       justify-content: flex-end;
     }
 
+    @media (max-width: 900px) {
+      .topbar-right {
+        gap: 8px;
+      }
+      .topbar-user span {
+        display: none;
+      }
+      .topbar-avatar {
+        width: 28px;
+        height: 28px;
+      }
+    }
+
     @media (max-width: 768px) {
+      .topbar {
+        padding: 0 16px;
+      }
+      
+      .topbar-name {
+        display: none;
+      }
+
       .stats-row {
         grid-template-columns: 1fr 1fr;
+        gap: 12px;
       }
 
       .panel-grid,
@@ -1002,6 +1034,105 @@
       .admin-main {
         padding: 20px 16px;
       }
+
+      .card-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+        padding: 16px 20px;
+      }
+
+      .card-header .btn {
+        width: 100%;
+        justify-content: center;
+      }
+
+      .q-item {
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .q-actions {
+        width: 100%;
+        justify-content: flex-end;
+        padding-top: 10px;
+        border-top: 1px solid var(--border);
+      }
+
+      .login-card {
+        padding: 32px 24px;
+        margin: 20px;
+      }
+
+      .tabs {
+        width: 100%;
+        gap: 2px;
+      }
+
+      .tab-btn {
+        padding: 8px 14px;
+        font-size: 12px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .stats-row {
+        grid-template-columns: 1fr;
+      }
+      
+      .topbar-right .btn-outline {
+        display: none !important;
+      }
+      
+      .page-title {
+        font-size: 20px;
+      }
+      
+      .btn-view-form {
+        padding: 6px 10px;
+        font-size: 11px;
+      }
+    }
+
+    /* ─── TABLE RESPONSIVENESS ─────────────── */
+    .table-wrap {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      border-radius: var(--radius-sm);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 600px;
+    }
+
+    th, td {
+      padding: 12px 16px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+      font-size: 13px;
+    }
+
+    th {
+      background: var(--bg);
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      font-size: 11px;
+      letter-spacing: 0.5px;
+    }
+
+    tr:hover td {
+      background: #fcfdff;
+    }
+
+    .truncate {
+      max-width: 200px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
   </style>
 </head>
@@ -1022,7 +1153,7 @@
       <p class="login-sub">Sign in to the admin panel</p>
       <div id="login-error" class="login-err">Invalid credentials. Please try again.</div>
       <label class="login-label">Email Address</label>
-      <input class="login-input" type="email" id="login-email" placeholder="admin@syntaxsyndicate.co.in"
+      <input class="login-input" type="email" id="login-email" placeholder="sample@syntaxsyndicate.co.in"
         autocomplete="email">
       <label class="login-label">Password</label>
       <input class="login-input" type="password" id="login-pass" placeholder="••••••••••••"
@@ -1044,12 +1175,18 @@
           </div>
           <span class="topbar-name">Syntax Syndicate</span>
         </a>
-        <span class="admin-chip">Admin Panel</span>
+        <span class="admin-chip">Admin</span>
         <div class="topbar-right">
           <button class="btn-outline btn-copy-link"
             style="display:none; padding:6px 12px; font-size:12px; background:var(--surface);"
-            onclick="copyEventLink()">📋 Copy Link</button>
-          <a class="btn-view-form" href="index.html" target="_blank" style="display:none;">↗ View Form</a>
+            onclick="copyEventLink()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M16 4h2a2 2 0 012 2v14a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg>
+            Copy Link
+          </button>
+          <a class="btn-view-form" href="index.html" target="_blank" style="display:none;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/></svg>
+            View Form
+          </a>
           <div class="topbar-user">
             <div class="topbar-avatar">AD</div>
             <span>Admin</span>
@@ -1228,7 +1365,8 @@
               </div>
               <div class="field-group" style="grid-column: 1 / -1;">
                 <label class="field-label">Detailed Event Description (Event Details)</label>
-                <textarea class="field-input" id="cfg-details" style="min-height: 120px; resize: vertical;" placeholder="Provide a detailed description of what the event is about..."></textarea>
+                <textarea class="field-input" id="cfg-details" style="min-height: 120px; resize: vertical;"
+                  placeholder="Provide a detailed description of what the event is about..."></textarea>
               </div>
             </div>
           </div>
@@ -1603,7 +1741,9 @@
       div.style.display = 'flex';
       div.style.gap = '5px';
       div.innerHTML = `<input type="date" class="field-input date-input" style="width:auto;" value="${val}">
-                   <button type="button" class="btn btn-danger btn-sm" onclick="this.parentElement.remove()">×</button>`;
+                   <button type="button" class="btn btn-danger btn-sm" onclick="this.parentElement.remove()">
+                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                   </button>`;
       container.appendChild(div);
     }
 
@@ -1716,7 +1856,10 @@
       const list = document.getElementById('opts-list');
       const row = document.createElement('div');
       row.className = 'opt-row';
-      row.innerHTML = `<input type="text" placeholder="Option text" value="${val}"><button class="btn-remove-opt" type="button" onclick="this.parentElement.remove()">×</button>`;
+      row.innerHTML = `<input type="text" placeholder="Option text" value="${val}">
+                   <button class="btn-remove-opt" type="button" onclick="this.parentElement.remove()">
+                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                   </button>`;
       list.appendChild(row);
     }
 
