@@ -1270,6 +1270,56 @@
     /* ─── Global State ────────────────────────────── */
     let currentEventId = new URLSearchParams(window.location.search).get('id');
 
+    /* ─── Helpers ─────────────────────────────────── */
+    function formatDate(dateStr) {
+      if (!dateStr) return 'TBA';
+      const d = new Date(dateStr);
+      if (isNaN(d.getTime())) return dateStr;
+
+      const day = d.getDate();
+      const month = d.toLocaleString('en-IN', { month: 'long' });
+      const year = d.getFullYear();
+
+      const suffix = (day) => {
+        if (day > 3 && day < 21) return 'th';
+        switch (day % 10) {
+          case 1: return 'st';
+          case 2: return 'nd';
+          case 3: return 'rd';
+          default: return 'th';
+        }
+      };
+
+      return { day, suffix: suffix(day), month, year };
+    }
+
+    function formatEventDates(dateStrings) {
+      if (!dateStrings || !dateStrings.length) return 'TBA';
+      const dates = dateStrings.map(ds => formatDate(ds)).filter(d => typeof d === 'object');
+      if (!dates.length) return 'TBA';
+
+      if (dates.length === 1) {
+        return `${dates[0].day}${dates[0].suffix} of ${dates[0].month} ${dates[0].year}`;
+      }
+
+      // Check if all dates are in the same month and year
+      const first = dates[0];
+      const sameMonthYear = dates.every(d => d.month === first.month && d.year === first.year);
+
+      if (sameMonthYear) {
+        const dayStrings = dates.map((d, i) => {
+          const str = `${d.day}${d.suffix}`;
+          if (i === dates.length - 1) return ` & ${str}`;
+          if (i === dates.length - 2) return str;
+          return `${str}, `;
+        }).join('');
+        return `${dayStrings} of ${first.month} ${first.year}`;
+      }
+
+      // Default: join full dates
+      return dates.map(d => `${d.day}${d.suffix} of ${d.month} ${d.year}`).join(' & ');
+    }
+
     /* ─── Load Events List ────────────────────────── */
     async function loadEventsList() {
       const grid = document.getElementById('events-grid');
@@ -1282,8 +1332,7 @@
         }
         grid.innerHTML = snap.docs.map(doc => {
           const d = doc.data();
-          const isSeries = d.dates && d.dates.length > 1;
-          const dateText = isSeries ? `Series (${d.dates.length} dates)` : (d.dates && d.dates[0] ? d.dates[0] : 'TBA');
+          const dateText = formatEventDates(d.dates);
           return `
         <div class="event-card" onclick="navigate('${doc.id}')">
           <div class="mode-badge">${d.mode || 'Online'}</div>
@@ -1333,13 +1382,7 @@
         const d = snap.data();
         if (d.title) document.getElementById('hero-title').innerHTML = `${d.title}<br><em>Registration Form</em>`;
 
-        const isSeries = d.dates && d.dates.length > 1;
-        let dateHtml = 'TBA';
-        if (isSeries) {
-          dateHtml = `Series (${d.dates.length} dates)<br><span style="font-size:11px;font-weight:400;">${d.dates.join(', ')}</span>`;
-        } else if (d.dates && d.dates.length === 1) {
-          dateHtml = d.dates[0];
-        }
+        const dateHtml = formatEventDates(d.dates);
 
         document.getElementById('event-date').innerHTML = dateHtml;
         if (d.time) document.getElementById('event-time').textContent = d.time;
