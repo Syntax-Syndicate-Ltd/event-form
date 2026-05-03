@@ -1371,6 +1371,14 @@
                 <label class="field-label">Organizer Link</label>
                 <input class="field-input" id="cfg-org-link" placeholder="e.g. https://syntaxsyndicate.co.in">
               </div>
+              <div class="field-group">
+                <label class="field-label">Speaker Name (Optional)</label>
+                <input class="field-input" id="cfg-tutor-name" placeholder="e.g. John Doe">
+              </div>
+              <div class="field-group">
+                <label class="field-label">Speaker Designation (Optional)</label>
+                <input class="field-input" id="cfg-tutor-desc" placeholder="e.g. Senior Software Engineer">
+              </div>
               <div class="field-group" style="grid-column: 1 / -1;">
                 <label class="field-label">Brief Details (Shown on Hero section)</label>
                 <input class="field-input" id="cfg-brief" placeholder="e.g. Join our exclusive workshop on modern web architecture.">
@@ -1763,6 +1771,8 @@
           document.getElementById('cfg-seats').value = d.seats || '';
           document.getElementById('cfg-org-name').value = d.orgName || '';
           document.getElementById('cfg-org-link').value = d.orgLink || '';
+          document.getElementById('cfg-tutor-name').value = d.tutorName || '';
+          document.getElementById('cfg-tutor-desc').value = d.tutorDesc || '';
           document.getElementById('cfg-brief').value = d.brief || '';
           document.getElementById('cfg-details').value = d.details || '';
 
@@ -1803,6 +1813,8 @@
         seats: parseInt(document.getElementById('cfg-seats').value) || null,
         orgName: document.getElementById('cfg-org-name').value.trim(),
         orgLink: document.getElementById('cfg-org-link').value.trim(),
+        tutorName: document.getElementById('cfg-tutor-name').value.trim(),
+        tutorDesc: document.getElementById('cfg-tutor-desc').value.trim(),
         brief: document.getElementById('cfg-brief').value.trim(),
         details: document.getElementById('cfg-details').value.trim(),
       };

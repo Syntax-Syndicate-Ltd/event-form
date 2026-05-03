@@ -398,6 +398,59 @@
       margin-top: -10px;
     }
 
+    .card-speaker {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      align-items: start;
+      gap: 12px;
+      margin-top: 4px;
+      padding: 12px;
+      background: var(--blue-light);
+      border-radius: 12px;
+      border: 1px solid rgba(59, 130, 246, 0.1);
+    }
+
+    .speaker-icon {
+      width: 32px;
+      height: 32px;
+      background: #fff;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--blue);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    }
+
+    .speaker-details {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .speaker-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 1px;
+    }
+
+    .speaker-name {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--navy);
+      line-height: 1.2;
+    }
+
+    .speaker-desc {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--muted);
+      line-height: 1.3;
+    }
+
     .event-card .card-meta {
       display: flex;
       flex-direction: row;
@@ -1204,6 +1257,19 @@
               <div class="info-value" id="event-mode">Online / Hybrid</div>
             </div>
           </div>
+          <div class="event-info-item" id="tutor-info-item" style="display:none;">
+            <div class="info-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+              </svg>
+            </div>
+            <div>
+              <div class="info-label">Speaker</div>
+              <div class="info-value"><span id="event-tutor-name">TBA</span> <br> <span id="event-tutor-desc"
+                  style="font-size:12px; font-weight:400; color:var(--muted);"></span></div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -1330,11 +1396,20 @@
           grid.innerHTML = '<p style="color:var(--muted); text-align: center; grid-column: 1/-1;">No upcoming events at the moment.</p>';
           return;
         }
-        grid.innerHTML = snap.docs.map(doc => {
+
+        // Fetch counts for all events in parallel
+        const eventsData = await Promise.all(snap.docs.map(async (doc) => {
           const d = doc.data();
+          const rSnap = await db.collection('events').doc(doc.id).collection('responses').get();
+          return { id: doc.id, ...d, count: rSnap.size };
+        }));
+
+        grid.innerHTML = eventsData.map(d => {
           const dateText = formatEventDates(d.dates);
+          const remaining = d.seats ? Math.max(0, d.seats - d.count) : null;
+
           return `
-        <div class="event-card" onclick="navigate('${doc.id}')">
+        <div class="event-card" onclick="navigate('${d.id}')">
           <div class="mode-badge">${d.mode || 'Online'}</div>
           <h3>${d.title || 'Untitled Event'}</h3>
           ${d.brief ? `<p class="card-brief">${d.brief}</p>` : ''}
@@ -1348,12 +1423,23 @@
               ${d.time || 'TBA'} · ${d.duration || 'TBA'}
             </div>
             ${d.seats ? `
-            <div class="meta-item">
+            <div class="meta-item" style="${remaining <= 10 ? 'color: var(--red); background: #fef2f2;' : ''}">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
-              ${d.seats} Seats Available
+              ${remaining} Seats Remaining
             </div>` : ''}
           </div>
-          <div class="btn-register">Register Now</div>
+          ${d.tutorName ? `
+          <div class="card-speaker">
+            <div class="speaker-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            </div>
+            <div class="speaker-details">
+              <span class="speaker-label">Speaker</span>
+              <span class="speaker-name">${d.tutorName}</span>
+              ${d.tutorDesc ? `<span class="speaker-desc">${d.tutorDesc}</span>` : ''}
+            </div>
+          </div>` : ''}
+          <div class="btn-register">${remaining === 0 ? 'Sold Out' : 'Register Now'}</div>
         </div>
       `;
         }).join('');
@@ -1404,6 +1490,15 @@
           document.querySelectorAll('.brand, #display-footer-brand-link').forEach(el => el.href = d.orgLink);
         }
 
+        // Tutor Info
+        if (d.tutorName) {
+          document.getElementById('tutor-info-item').style.display = 'flex';
+          document.getElementById('event-tutor-name').textContent = d.tutorName;
+          document.getElementById('event-tutor-desc').textContent = d.tutorDesc || '';
+        } else {
+          document.getElementById('tutor-info-item').style.display = 'none';
+        }
+
         // Hero Description
         if (d.brief) {
           document.getElementById('hero-desc').textContent = d.brief;
@@ -1420,7 +1515,27 @@
         document.getElementById('display-year').textContent = new Date().getFullYear();
         // count registrations
         const rSnap = await db.collection('events').doc(currentEventId).collection('responses').get();
-        document.getElementById('stat-registered').textContent = rSnap.size;
+        const registeredCount = rSnap.size;
+        document.getElementById('stat-registered').textContent = registeredCount;
+
+        // Sold out check
+        if (d.seats && registeredCount >= d.seats) {
+          document.getElementById('reg-form').innerHTML = `
+            <div style="text-align:center; padding: 40px 20px;">
+              <div class="success-icon" style="background: #fef2f2;">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="3">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="15" y1="9" x2="9" y2="15"></line>
+                  <line x1="9" y1="9" x2="15" y2="15"></line>
+                </svg>
+              </div>
+              <h2 style="color:var(--navy);">Registration Closed</h2>
+              <p style="color:var(--muted);">Sorry, this event has reached its maximum capacity. Please check back later or join the waitlist if available.</p>
+              <button class="btn-reset" onclick="location.href='index.html'">View Other Events</button>
+            </div>
+          `;
+          document.getElementById('reg-form').style.display = 'block';
+        }
       } catch (e) { console.warn('Meta load:', e.message); }
     }
 
