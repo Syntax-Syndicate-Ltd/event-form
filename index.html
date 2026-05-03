@@ -4,25 +4,25 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Technical Seminar Registration · Syntax Syndicate</title>
+  <title>Syntax Syndicate Events · Registration Portal</title>
   
   <!-- SEO & Favicon -->
   <link rel="icon" type="image/jpeg" href="favicon.jpeg">
   <link rel="canonical" href="https://events.syntaxsyndicate.co.in/">
-  <meta name="description" content="Join exclusive technical seminars, workshops, and community events organized by Syntax Syndicate. Secure your spot today." />
+  <meta name="description" content="Register for upcoming Syntax Syndicate events, workshops, and technical sessions. Secure your spot in our community-driven learning experiences." />
   
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://events.syntaxsyndicate.co.in/">
-  <meta property="og:title" content="Technical Seminar Registration · Syntax Syndicate">
-  <meta property="og:description" content="Join exclusive technical seminars, workshops, and community events organized by Syntax Syndicate. Secure your spot today.">
+  <meta property="og:title" content="Syntax Syndicate Events · Registration Portal">
+  <meta property="og:description" content="Register for upcoming Syntax Syndicate events, workshops, and technical sessions. Secure your spot in our community-driven learning experiences.">
   <meta property="og:image" content="favicon.jpeg">
 
   <!-- Twitter -->
   <meta property="twitter:card" content="summary_large_image">
   <meta property="twitter:url" content="https://events.syntaxsyndicate.co.in/">
-  <meta property="twitter:title" content="Technical Seminar Registration · Syntax Syndicate">
-  <meta property="twitter:description" content="Join exclusive technical seminars, workshops, and community events organized by Syntax Syndicate. Secure your spot today.">
+  <meta property="twitter:title" content="Syntax Syndicate Events · Registration Portal">
+  <meta property="twitter:description" content="Register for upcoming Syntax Syndicate events, workshops, and technical sessions. Secure your spot in our community-driven learning experiences.">
   <meta property="twitter:image" content="favicon.jpeg">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1125,16 +1125,16 @@
   <div id="landing-hero" class="landing-hero" style="display:none;">
     <div class="event-badge">Explore Our Community</div>
     <h1>Connect, Learn & <em>Grow Together</em></h1>
-    <p>Join exclusive technical seminars, workshops, and community events organized by Syntax Syndicate. Secure your
+    <p>Join exclusive workshops, technical sessions, and community events organized by Syntax Syndicate. Secure your
       spot today.</p>
   </div>
 
   <!-- HERO (For single event) -->
   <div class="hero" id="hero-section" style="display:none;">
     <div class="event-badge">Live Registration Open</div>
-    <h1 id="hero-title">Technical Seminar <em>Registration Form</em></h1>
-    <p id="hero-desc">Join Syntax Syndicate's flagship technical seminar. Fill in your details below to secure your spot
-      in this exclusive event.</p>
+    <h1 id="hero-title">Syntax Syndicate <em>Events Portal</em></h1>
+    <p id="hero-desc">Register for our latest community-driven events. Fill in your details below to secure your spot
+      in these exclusive sessions.</p>
   </div>
 
   <!-- EVENTS LIST -->
@@ -1476,8 +1476,27 @@
         if (d.duration) document.getElementById('event-duration').textContent = d.duration;
         if (d.seats) document.getElementById('stat-seats').textContent = d.seats;
 
-        // Dynamic Title
-        if (d.title) document.title = `${d.title} Registration · ${d.orgName || 'Syntax Syndicate'}`;
+        // Dynamic Title & Meta
+        if (d.title) {
+          const fullTitle = `${d.title} · Syntax Syndicate Events`;
+          document.title = fullTitle;
+          
+          // Update Open Graph & Twitter Tags
+          const metaTitle = d.title;
+          const metaDesc = d.brief || d.details?.substring(0, 150) || "Register for this exclusive Syntax Syndicate event.";
+          
+          // Helper to set meta content
+          const setMeta = (property, content) => {
+            const el = document.querySelector(`meta[property="${property}"], meta[name="${property}"]`);
+            if (el) el.setAttribute('content', content);
+          };
+
+          setMeta('og:title', metaTitle);
+          setMeta('twitter:title', metaTitle);
+          setMeta('og:description', metaDesc);
+          setMeta('twitter:description', metaDesc);
+          setMeta('description', metaDesc);
+        }
 
         // Dynamic Organizer
         if (d.orgName) {
