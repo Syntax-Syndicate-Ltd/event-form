@@ -1333,6 +1333,11 @@
           document.querySelectorAll('.brand, #display-footer-brand-link').forEach(el => el.href = d.orgLink);
         }
 
+        // Hero Description
+        if (d.brief) {
+          document.getElementById('hero-desc').textContent = d.brief;
+        }
+
         // Event Description
         if (d.details) {
           document.getElementById('event-description-card').style.display = 'block';

@@ -1372,6 +1372,10 @@
                 <input class="field-input" id="cfg-org-link" placeholder="e.g. https://syntaxsyndicate.co.in">
               </div>
               <div class="field-group" style="grid-column: 1 / -1;">
+                <label class="field-label">Brief Details (Shown on Hero section)</label>
+                <input class="field-input" id="cfg-brief" placeholder="e.g. Join our exclusive workshop on modern web architecture.">
+              </div>
+              <div class="field-group" style="grid-column: 1 / -1;">
                 <label class="field-label">Detailed Event Description (Event Details)</label>
                 <textarea class="field-input" id="cfg-details" style="min-height: 120px; resize: vertical;"
                   placeholder="Provide a detailed description of what the event is about..."></textarea>
@@ -1759,6 +1763,7 @@
           document.getElementById('cfg-seats').value = d.seats || '';
           document.getElementById('cfg-org-name').value = d.orgName || '';
           document.getElementById('cfg-org-link').value = d.orgLink || '';
+          document.getElementById('cfg-brief').value = d.brief || '';
           document.getElementById('cfg-details').value = d.details || '';
 
           const datesContainer = document.getElementById('cfg-dates-container');
@@ -1798,6 +1803,7 @@
         seats: parseInt(document.getElementById('cfg-seats').value) || null,
         orgName: document.getElementById('cfg-org-name').value.trim(),
         orgLink: document.getElementById('cfg-org-link').value.trim(),
+        brief: document.getElementById('cfg-brief').value.trim(),
         details: document.getElementById('cfg-details').value.trim(),
       };
       try {
