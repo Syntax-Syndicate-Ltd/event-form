@@ -612,6 +612,12 @@
       font-size: 12px;
     }
 
+    .sortable-ghost {
+      opacity: 0.4;
+      background: var(--blue-light);
+      border: 1.5px dashed var(--blue);
+    }
+
     /* ─── FORM BUILDER ────────────────────── */
     #questions-list {
       display: flex;
@@ -1533,6 +1539,7 @@
   <!-- FIREBASE -->
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
   <script>
     /* ═══════════════════════════════════════════════
        🔥 FIREBASE CONFIG — Replace with your project
@@ -1876,6 +1883,46 @@
       </div>
     </div>
   `).join('');
+      initQuestionsSortable();
+    }
+
+    function initQuestionsSortable() {
+      const list = document.getElementById('questions-list');
+      if (!list || !_questions.length) return;
+
+      if (list._sortable) list._sortable.destroy();
+
+      list._sortable = new Sortable(list, {
+        handle: '.q-drag',
+        animation: 150,
+        ghostClass: 'sortable-ghost',
+        onEnd: async function () {
+          const items = list.querySelectorAll('.q-item');
+          const batch = db.batch();
+          const newQuestions = [];
+
+          items.forEach((item, index) => {
+            const qId = item.getAttribute('data-id');
+            const q = _questions.find(x => x.id === qId);
+            if (q) {
+              const updatedQ = { ...q, order: index };
+              newQuestions.push(updatedQ);
+              const qRef = db.collection('events').doc(currentEventId).collection('questions').doc(qId);
+              batch.set(qRef, { order: index }, { merge: true });
+            }
+          });
+
+          try {
+            await batch.commit();
+            _questions = newQuestions.sort((a, b) => a.order - b.order);
+            renderQuestionsList();
+            toast('Question order updated!', 'success');
+          } catch (e) {
+            toast('Failed to update order: ' + e.message, 'error');
+            loadQuestionsAdmin(); // Revert on failure
+          }
+        }
+      });
     }
 
     function typeLabel(t) {
