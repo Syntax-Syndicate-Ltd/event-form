@@ -56,60 +56,45 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      background: var(--navy);
+      background: #f8fafc;
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(59, 91, 255, 0.03) 0, transparent 50%), 
+        radial-gradient(at 50% 0%, rgba(59, 91, 255, 0.02) 0, transparent 50%), 
+        radial-gradient(at 100% 0%, rgba(59, 91, 255, 0.03) 0, transparent 50%);
       position: relative;
       overflow: hidden;
     }
 
-    #login-screen::before {
-      content: '';
-      position: absolute;
-      width: 600px;
-      height: 600px;
-      background: radial-gradient(circle, rgba(59, 91, 255, 0.2) 0%, transparent 70%);
-      top: -100px;
-      right: -100px;
-      pointer-events: none;
-    }
-
-    #login-screen::after {
-      content: '';
-      position: absolute;
-      width: 400px;
-      height: 400px;
-      background: radial-gradient(circle, rgba(90, 119, 255, 0.15) 0%, transparent 70%);
-      bottom: -100px;
-      left: -100px;
-      pointer-events: none;
-    }
-
     .login-card {
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(20px);
+      background: var(--surface);
+      border: 1px solid var(--border);
       border-radius: var(--radius-lg);
-      padding: 44px 40px;
+      padding: 48px 40px;
       width: 100%;
-      max-width: 420px;
+      max-width: 440px;
       position: relative;
       z-index: 1;
+      box-shadow: 0 20px 50px rgba(15, 22, 41, 0.05);
     }
 
     .login-brand {
       display: flex;
+      flex-direction: column;
       align-items: center;
-      gap: 10px;
-      margin-bottom: 32px;
+      gap: 16px;
+      margin-bottom: 40px;
+      text-align: center;
     }
 
     .login-brand-icon {
-      width: 40px;
-      height: 40px;
-      border-radius: 10px;
+      width: 64px;
+      height: 64px;
+      border-radius: 16px;
       overflow: hidden;
       display: flex;
       align-items: center;
       justify-content: center;
+      box-shadow: 0 8px 20px rgba(59, 91, 255, 0.15);
     }
 
     .login-brand-icon img {
@@ -119,108 +104,118 @@
     }
 
     .login-brand-name {
-      font-size: 16px;
-      font-weight: 700;
-      color: #fff;
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--navy);
+      letter-spacing: -0.5px;
     }
 
     .login-badge {
-      margin-left: auto;
-      font-size: 10px;
+      font-size: 11px;
       font-weight: 700;
       color: var(--amber);
-      background: rgba(245, 158, 11, 0.15);
-      padding: 3px 8px;
+      background: var(--amber-light);
+      padding: 4px 12px;
       border-radius: 100px;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.8px;
       text-transform: uppercase;
+      margin-top: 4px;
+    }
+
+    .login-header {
+      text-align: center;
+      margin-bottom: 32px;
     }
 
     .login-title {
-      font-size: 26px;
-      font-weight: 700;
-      color: #fff;
-      margin-bottom: 6px;
-      letter-spacing: -0.3px;
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--navy);
+      margin-bottom: 8px;
+      letter-spacing: -0.8px;
     }
 
     .login-sub {
-      font-size: 14px;
-      color: rgba(255, 255, 255, 0.45);
-      margin-bottom: 32px;
+      font-size: 15px;
+      color: var(--muted);
+      line-height: 1.5;
     }
 
     .login-label {
       display: block;
       font-size: 12px;
-      font-weight: 600;
-      color: rgba(255, 255, 255, 0.5);
+      font-weight: 700;
+      color: var(--navy);
       text-transform: uppercase;
       letter-spacing: 0.5px;
       margin-bottom: 8px;
+      opacity: 0.6;
     }
 
     .login-input {
       width: 100%;
-      background: rgba(255, 255, 255, 0.07);
-      border: 1.5px solid rgba(255, 255, 255, 0.1);
+      background: #f1f5f9;
+      border: 1.5px solid transparent;
       border-radius: var(--radius-sm);
-      padding: 12px 16px;
+      padding: 14px 18px;
       font-family: inherit;
-      font-size: 14px;
-      color: #fff;
+      font-size: 15px;
+      color: var(--navy);
       outline: none;
-      transition: border-color 0.15s;
-      margin-bottom: 18px;
+      transition: all 0.2s;
+      margin-bottom: 20px;
     }
 
     .login-input::placeholder {
-      color: rgba(255, 255, 255, 0.25);
+      color: #94a3b8;
     }
 
     .login-input:focus {
-      border-color: var(--blue-mid);
-    }
-
-    .login-input[type=password] {
-      font-family: 'DM Mono', monospace;
+      background: #fff;
+      border-color: var(--blue);
+      box-shadow: 0 0 0 4px rgba(59, 91, 255, 0.08);
     }
 
     .login-err {
-      background: rgba(239, 68, 68, 0.15);
-      color: #fca5a5;
+      background: #fef2f2;
+      color: #dc2626;
       font-size: 13px;
-      padding: 10px 14px;
+      font-weight: 600;
+      padding: 12px 16px;
       border-radius: var(--radius-sm);
-      margin-bottom: 16px;
+      margin-bottom: 20px;
+      border: 1px solid #fecaca;
       display: none;
     }
 
     .btn-login {
       width: 100%;
-      background: var(--blue);
+      background: var(--navy);
       color: #fff;
       font-family: inherit;
-      font-size: 15px;
-      font-weight: 600;
-      padding: 14px;
+      font-size: 16px;
+      font-weight: 700;
+      padding: 16px;
       border: none;
       border-radius: var(--radius-sm);
       cursor: pointer;
-      transition: all 0.18s;
-      letter-spacing: -0.1px;
+      transition: all 0.2s;
+      letter-spacing: -0.2px;
+      margin-top: 8px;
     }
 
     .btn-login:hover {
-      background: #2a47e0;
-      transform: translateY(-1px);
+      background: var(--blue);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(59, 130, 246, 0.25);
     }
 
     .login-hint {
       text-align: center;
-      font-size: 12px;
-      color: rgba(255, 255, 255, 0.25);
-      margin-top: 20px;
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 24px;
+      font-weight: 500;
     }
 
     /* ─── ADMIN SHELL ─────────────────────── */
@@ -1149,20 +1144,28 @@
         <div class="login-brand-icon">
           <img src="favicon.jpeg" alt="Logo">
         </div>
-        <span class="login-brand-name">Syntax Syndicate</span>
-        <span class="login-badge">Admin</span>
+        <div style="display:flex; flex-direction:column; align-items:center;">
+          <span class="login-brand-name">Syntax Syndicate</span>
+          <span class="login-badge">Admin Portal</span>
+        </div>
       </div>
-      <h1 class="login-title">Welcome back</h1>
-      <p class="login-sub">Sign in to the admin panel</p>
-      <div id="login-error" class="login-err">Invalid credentials. Please try again.</div>
+
+      <div class="login-header">
+        <h1 class="login-title">Welcome Back</h1>
+        <p class="login-sub">Please enter your administrative credentials to manage events and registrations.</p>
+      </div>
+
+      <div id="login-error" class="login-err">Invalid access credentials. Please try again.</div>
+
       <label class="login-label">Email Address</label>
-      <input class="login-input" type="email" id="login-email" placeholder="sample@syntaxsyndicate.co.in"
-        autocomplete="email">
+      <input type="email" id="login-email" class="login-input" placeholder="admin@syntaxsyndicate.co.in">
+
       <label class="login-label">Password</label>
-      <input class="login-input" type="password" id="login-pass" placeholder="••••••••••••"
-        autocomplete="current-password">
-      <button class="btn-login" onclick="doLogin()">Sign In</button>
-      <p class="login-hint">Access restricted to authorized administrators only.</p>
+      <input type="password" id="login-pass" class="login-input" placeholder="••••••••">
+
+      <button class="btn-login" onclick="doLogin()">Authorize Access</button>
+
+      <p class="login-hint">Authorized personnel only. Access is monitored.</p>
     </div>
   </div>
 
